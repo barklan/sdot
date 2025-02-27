@@ -1,1 +1,1 @@
-# sdot
+# some-dotfiles
