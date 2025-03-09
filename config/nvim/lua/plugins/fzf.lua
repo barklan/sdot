@@ -4,8 +4,7 @@ return {
     cond = NotVSCode,
     cmd = "FzfLua",
     dependencies = {
-        "nvim-tree/nvim-web-devicons",
-        "junegunn/fzf",
+        -- "nvim-tree/nvim-web-devicons",
     },
     config = function()
         local actions = require("fzf-lua.actions")
@@ -52,6 +51,10 @@ return {
             },
             grep = {
                 rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -uu",
+            },
+            files = {
+                git_icons = true,
+                fd_opts = [[--color=never --hidden --no-ignore --type f --exclude .git --exclude .venv]],
             },
             git = {
                 status = {

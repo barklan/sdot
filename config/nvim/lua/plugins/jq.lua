@@ -1,9 +1,13 @@
 return {
     {
-        "jrop/jq.nvim",
+        "yochem/jq-playground.nvim",
         lazy = true,
         event = "VeryLazy",
         cond = NotVSCode,
-        cmd = "Jq",
+        cmd = "JqPlayground",
+        opts = {
+            cmd = { "jaq" },
+            disable_default_keymap = true,
+        },
     },
 }

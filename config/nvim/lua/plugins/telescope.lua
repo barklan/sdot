@@ -1,10 +1,5 @@
 return {
     {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        lazy = true,
-        build = "make",
-    },
-    {
         "nvim-telescope/telescope-file-browser.nvim",
         lazy = true,
         dependencies = {
@@ -26,15 +21,6 @@ return {
         },
     },
     {
-        "danielfalk/smart-open.nvim",
-        lazy = true,
-        branch = "0.2.x",
-        dependencies = {
-            "kkharji/sqlite.lua",
-            { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-        },
-    },
-    {
         "nvim-telescope/telescope.nvim",
         lazy = true,
         cond = NotVSCode,
@@ -44,12 +30,10 @@ return {
             "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope-live-grep-args.nvim",
             "benfowler/telescope-luasnip.nvim",
-            "nvim-telescope/telescope-fzf-native.nvim",
             "nvim-telescope/telescope-file-browser.nvim",
             "crispgm/telescope-heading.nvim",
             "edolphin-ydf/goimpl.nvim",
             "debugloop/telescope-undo.nvim",
-            "danielfalk/smart-open.nvim",
         },
         config = function()
             local previewers = require("telescope.previewers")
@@ -77,10 +61,10 @@ return {
                             ["<C-t>"] = false,
                             ["<C-v>"] = false,
                             ["<C-u>"] = false,
-                            ["<C-BS>"] = false,
                             ["<C-h>"] = "which_key",
                             ["<Tab>"] = actions.move_selection_next,
                             ["<S-Tab>"] = actions.move_selection_previous,
+                            ["<C-BS>"] = false,
                             -- ["<C-BS>"] = "<C-W>",
                         },
                         n = {
@@ -153,16 +137,6 @@ return {
                     },
                 },
                 extensions = {
-                    smart_open = {
-                        cwd_only = true,
-                        match_algorithm = "fzf",
-                    },
-                    fzf = {
-                        fuzzy = true,
-                        override_generic_sorter = true,
-                        override_file_sorter = true,
-                        case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-                    },
                     file_browser = {
                         grouped = true,
                     },
@@ -187,7 +161,6 @@ return {
                     },
                 },
             })
-            require("telescope").load_extension("fzf")
             require("telescope").load_extension("file_browser")
             require("telescope").load_extension("luasnip")
             -- require("telescope").load_extension("git_worktree")
@@ -196,7 +169,6 @@ return {
             require("telescope").load_extension("heading")
             require("telescope").load_extension("goimpl")
             require("telescope").load_extension("undo")
-            require("telescope").load_extension("smart_open")
         end,
     },
 }

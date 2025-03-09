@@ -1,19 +1,26 @@
 return {
     {
+        "folke/snacks.nvim",
+        priority = 1000,
+        lazy = false,
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+            bigfile = { enabled = true },
+            scroll = { enabled = false },
+        },
+    },
+    {
         "nvim-tree/nvim-web-devicons",
         lazy = true,
-        enabled = true,
+        enabled = false,
         opts = {
             color_icons = false,
             strict = true,
             default = true,
         },
     },
-    -- {
-    --     "stevearc/dressing.nvim",
-    --     event = "VeryLazy",
-    --     cond = NotVSCode,
-    -- },
     {
         "rcarriga/nvim-notify",
         event = "VeryLazy",
@@ -24,7 +31,21 @@ return {
                 -- stages = "fade",
                 stages = "static",
             })
-            vim.notify = require("notify")
+
+            -- List of messages to ignore
+            local ignored_messages = {
+                -- "No information available",
+            }
+
+            -- vim.notify = require("notify")
+            vim.notify = function(msg, ...)
+                for _, ignored in ipairs(ignored_messages) do
+                    if msg:match(ignored) then
+                        return
+                    end
+                end
+                require("notify")(msg, ...)
+            end
         end,
     },
     {
@@ -78,20 +99,6 @@ return {
             })
         end,
     },
-    -- {
-    --     "NvChad/nvim-colorizer.lua",
-    --     event = "VeryLazy",
-    --     cond = NotVSCode,
-    --     config = function()
-    --         require("colorizer").setup({
-    --             filetypes = {
-    --                 "css",
-    --                 "javascript",
-    --                 "html",
-    --             },
-    --         })
-    --     end,
-    -- },
     {
         "RRethy/vim-illuminate",
         event = "VeryLazy",

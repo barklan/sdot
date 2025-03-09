@@ -4,7 +4,7 @@ return {
         event = "VeryLazy",
         cond = NotVSCode,
         dependencies = {
-            "nvim-tree/nvim-web-devicons",
+            -- "nvim-tree/nvim-web-devicons",
         },
         config = function()
             local function diff_source()
@@ -53,10 +53,10 @@ return {
                     },
                     lualine_c = {
                         -- "mode",
-                        { "filename" },
+                        -- { "filename" },
                         {
                             "diagnostics",
-                            symbols = { error = "E", warn = "W", info = "I", hint = "H" },
+                            symbols = { error = "Errors ", warn = "Warnings ", info = "Infos ", hint = "Hints " },
                         },
                         {
                             "diff",
@@ -68,14 +68,14 @@ return {
                         {
                             "buffers",
                             icons_enabled = false,
-                            max_length = vim.o.columns,
                             max_length = vim.o.columns * 7 / 10,
                             show_filename_only = true,
                             buffers_color = {
                                 active = "lualine_a_normal", -- Color for active buffer.
+                                inactive = "lualine_c_normal", -- This fix is mainly for tokyo-night
                             },
                             symbols = {
-                                modified = "", -- Text to show when the buffer is modified
+                                modified = "",       -- Text to show when the buffer is modified
                                 alternate_file = "", -- Text to show to identify the alternate file
                             },
                         },

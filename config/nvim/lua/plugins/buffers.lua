@@ -2,11 +2,13 @@ return {
     {
         "kazhala/close-buffers.nvim",
         lazy = true,
+        cond = NotVSCode,
         opts = {},
     },
     {
-        "famiu/bufdelete.nvim",
+        "famiu/bufdelete.nvim", -- TODO: archived on GitHub
         lazy = true,
+        cond = NotVSCode,
     },
     {
         "chrisgrieser/nvim-early-retirement",

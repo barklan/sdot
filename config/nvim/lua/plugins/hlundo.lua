@@ -3,6 +3,9 @@ return {
         "tzachar/highlight-undo.nvim",
         event = "VeryLazy",
         cond = NotVSCode,
-        config = true,
+        opts = {
+            duration = 300,
+            pattern = { "*" },
+        },
     },
 }

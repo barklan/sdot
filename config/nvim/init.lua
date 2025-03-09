@@ -103,7 +103,7 @@ require("lazy").setup("plugins", {
         rtp = {
             disabled_plugins = {
                 "gzip",
-                "netrwPlugin",
+                -- "netrwPlugin", # Need it enabled for spellcheck.
                 "rplugin",
                 "tarPlugin",
                 "tohtml",

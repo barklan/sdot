@@ -44,6 +44,7 @@ return {
         config = function()
             require("project_nvim").setup({
                 detection_methods = { "pattern" },
+                patterns = { ".git" },
                 silent_chdir = true,
                 exclude_dirs = { "~/.local/*", "~/.config/*", "/usr/*" },
             })

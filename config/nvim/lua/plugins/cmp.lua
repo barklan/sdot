@@ -1,6 +1,7 @@
 return {
     {
         "L3MON4D3/LuaSnip",
+        version = "v2.*",
         lazy = true,
         config = function()
             local luasnip = require("luasnip")
@@ -26,18 +27,13 @@ return {
             "windwp/nvim-autopairs",
             "lukas-reineke/cmp-under-comparator",
             "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
+            -- "hrsh7th/cmp-path",
+            "https://codeberg.org/FelipeLema/cmp-async-path",
             "hrsh7th/cmp-cmdline",
             "abecodes/tabout.nvim",
             "mtoohey31/cmp-fish",
         },
         config = function()
-            local has_words_before = function()
-                unpack = unpack or table.unpack
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-            end
-
             local luasnip = require("luasnip")
             local cmp = require("cmp")
 
@@ -84,7 +80,6 @@ return {
                         nvim_lsp_document_symbol = "LSP",
                         buffer = "buf",
                         path = "path",
-                        calc = "calc",
                         git = "git",
                         rg = "rg",
                         treesitter = "TS",
@@ -179,12 +174,10 @@ return {
                     { name = "nvim_lsp", priority = 10 },
                     { name = "nvim_lsp_signature_help" },
                     { name = "buffer", option = { keyword_length = 1 }, dup = 1 },
-                    { name = "path" },
-                    { name = "crates" },
+                    -- { name = "path" },
+                    { name = "async_path" },
+                    -- { name = "crates" },
                     { name = 'fish' },
-
-                    -- NOTE: not used
-                    -- { name = "calc" },
 
                     { name = "git" },
 
@@ -213,11 +206,11 @@ return {
                 sources = {
                     { name = "cmdline", max_item_count = 10, priority = 10 },
                     { name = "cmdline_history", max_item_count = 10, priority = 9 },
-                    { name = "path" },
+                    -- { name = "path" },
+                    { name = "async_path" },
                     { name = "nvim_lsp_document_symbol", max_item_count = 3 },
                     { name = "buffer", max_item_count = 3 },
                     { name = "fuzzy_buffer", max_item_count = 3 },
-                    { name = "calc" },
                 },
             })
 
@@ -254,14 +247,6 @@ return {
     },
     {
         "hrsh7th/cmp-nvim-lsp-document-symbol",
-        event = { "InsertEnter", "CmdlineEnter" },
-        cond = CMPEnable,
-        dependencies = {
-            "hrsh7th/nvim-cmp",
-        },
-    },
-    {
-        "hrsh7th/cmp-calc",
         event = { "InsertEnter", "CmdlineEnter" },
         cond = CMPEnable,
         dependencies = {

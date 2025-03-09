@@ -65,19 +65,10 @@ end
 --------------
 --- Navigation
 --------------
-require("config.ctrll")
 
--- vim.keymap.set("n", "<C-l>", function()
---     require("telescope").extensions.smart_open.smart_open({
---         layout_config = {
---             width = 0.65,
---             height = 0.8,
---             preview_width = 0.5,
---         },
---     })
--- end, { silent = true, desc = "Smart open" })
+vim.keymap.set("n", "<leader>a", ":Telescope<cr>", { silent = true, desc = "Telescope (all)" })
 
--- vim.keymap.set("n", "<C-l>", ":FzfLua files<cr>", { silent = true, desc = "open file" })
+vim.keymap.set("n", "<C-h>", ":FzfLua buffers<cr>", { silent = true, desc = "switch to buffer" })
 
 vim.keymap.set("n", "<C-l>", function()
     require("fzf-lua").files({
@@ -99,22 +90,19 @@ vim.keymap.set("n", "<C-l>", function()
     })
 end, { silent = true, desc = "open file" })
 
-vim.keymap.set("n", "<leader><leader>", ":Telescope resume<cr>", { silent = true, desc = "Telescope resume" })
+vim.keymap.set("n", "<C-M-l>", function()
+    require("fzf-lua").files({
+        silent = true,
+        fd_opts = [[--color=never --type f -e go]],
+    })
+end, { silent = true, desc = "Find files" })
 
--- TODO: taken by hop
--- vim.keymap.set(
---     "n",
---     "<Leader><tab>",
---     "<cmd>lua require('telescope.builtin').buffers({layout_config={width=0.5,height=0.6,preview_width=0}})<cr>",
---     { silent = true, desc = "Find open buffers" }
--- )
+vim.keymap.set("n", "<leader><leader>", ":Telescope resume<cr>", { silent = true, desc = "Telescope resume" })
 
 -- TODO: replace with with fzflua
 vim.keymap.set("n", "<C-p>", ":Telescope file_browser path=%:p:h<cr>", silent)
 
 vim.keymap.set("n", "<leader>t", ":TodoTelescope keywords=TODO,FIX<cr>", { silent = true, desc = "Find TODOs" })
-vim.keymap.set("n", "<C-h>", ":Telescope harpoon marks<cr>", silent)
-vim.keymap.set("n", "<leader>h", ":lua require('harpoon.mark').add_file()<cr>", { silent = true, desc = "Add harpoon mark" })
 
 --------------
 -- Diagnostics (also look in lsp_shim.lua)
@@ -125,7 +113,8 @@ vim.keymap.set("n", ";", function()
     vim.cmd("silent update")
 end, { silent = true, desc = "Format document" })
 
-vim.keymap.set("n", "<C-t>", ":Telescope lsp_dynamic_workspace_symbols<cr>", { desc = "Find workspace symbols" })
+-- vim.keymap.set("n", "<C-t>", ":Telescope lsp_dynamic_workspace_symbols<cr>", { desc = "Find workspace symbols" })
+vim.keymap.set("n", "<C-t>", ":FzfLua lsp_live_workspace_symbols<cr>", { desc = "Find workspace symbols" })
 
 vim.keymap.set("n", "gd", ":Telescope lsp_definitions<cr>", { silent = true, desc = "Find  LSP definitions" })
 vim.keymap.set("n", "gj", ":Telescope lsp_references<cr>", { silent = true, desc = "Find LSP references" })
@@ -148,7 +137,7 @@ local function toggle_lsp_lines()
     vim.diagnostic.config({ virtual_text = not lines_shown })
 end
 vim.keymap.set("n", "<Leader>dm", toggle_lsp_lines, { desc = "Toggle multiline diagnostics" })
-vim.keymap.set("n", "<leader>dl", ":FzfLua diagnostics_workspace<cr>", { silent = true, desc = "Workspace diagnostics (telescope)" })
+vim.keymap.set("n", "<leader>dl", ":FzfLua diagnostics_workspace<cr>", { silent = true, desc = "Workspace diagnostics" })
 
 local diagnostics_active = true
 vim.keymap.set("n", "<leader>dt", function()
@@ -163,6 +152,9 @@ end)
 ---------
 -- Search
 ---------
+
+vim.keymap.set("n", "<leader>s", ":Telescope search_history<cr>", { silent = true, desc = "Telescope search history" })
+
 vim.keymap.set("n", "<C-f>", function()
     require("telescope.builtin").current_buffer_fuzzy_find({ layout_config = { width = 0.7, height = 0.7, preview_width = 0 } })
 end, silent)
@@ -225,9 +217,6 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<leader>fs", ":Telescope grep_string<cr>", { silent = true, desc = "grep string" })
 
-vim.keymap.set("n", "<leader>fl", ":lua require('telescope').extensions.git_grep.git_grep()<CR>", { silent = true, desc = "git grep" })
-vim.keymap.set("n", "<leader>fb", ":lua require('telescope').extensions.git_grep.git_bgrep()<CR>", { silent = true, desc = "git grep buffer" })
-
 -----------------
 -- Misc
 -----------------
@@ -252,6 +241,9 @@ vim.keymap.set("n", "<leader>l", function()
     -- vim.cmd("on") -- close other windows
     vim.cmd("echo")
 end, { desc = "Clean shit" })
+
+vim.keymap.set("n", "R", "<Nop>")
+vim.keymap.set("n", "<C-CR>", "<Plug>(JqPlaygroundRunQuery)")
 
 -----
 --Git
@@ -302,32 +294,3 @@ vim.keymap.set(
     { noremap = true, silent = true, desc = "Generate stub for interface on a type." }
 )
 vim.keymap.set("n", "<leader>gi", ":GoImports<cr>")
-
---------
--- Theme
---------
-
-vim.keymap.set("n", "<F5>", function()
-    local t = vim.g.colors_name
-    if t == "zenwritten" and vim.o.background == "light" then
-        vim.o.background = "light"
-        vim.cmd("colorscheme vimbones")
-    else
-        vim.o.background = "light"
-        vim.cmd("colorscheme zenwritten")
-    end
-end)
-
-vim.keymap.set("n", "<F4>", function()
-    local t = vim.g.colors_name
-    if t == "tokyonight" and vim.o.background == "dark" then
-        vim.o.background = "dark"
-        vim.cmd("colorscheme kanagawa")
-    elseif t == "kanagawa" then
-        vim.o.background = "dark"
-        vim.cmd("colorscheme zenwritten")
-    else
-        vim.o.background = "dark"
-        vim.cmd("colorscheme tokyonight-night")
-    end
-end, { silent = true, desc = "Cycle theme" })

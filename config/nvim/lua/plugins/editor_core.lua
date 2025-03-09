@@ -68,7 +68,8 @@ return {
             { "S", mode = { "n", "v", "o" } },
         },
         config = function()
-            -- TODO: not enabled, mini surround has s keymap
+            -- TODO: s/S keymaps not enabled, mini surround has s keymap.
+            -- This plugin if for flit.
             -- require("leap").set_default_keymaps()
             require("leap").setup({
                 case_insensitive = true,
@@ -90,8 +91,8 @@ return {
         },
     },
     {
-        "phaazon/hop.nvim",
-        branch = "v2",
+        "smoka7/hop.nvim",
+        version = "*",
         lazy = true,
         keys = {
             { "<leader><tab>", "<cmd> lua require'hop'.hint_words()<cr>", mode = { "n", "v" } },

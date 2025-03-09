@@ -19,8 +19,8 @@ return {
                 -- gopls_cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=20m" },
                 gopls_cmd = { "gopls" },
                 goimports = "gopls",
-                gofmt = "gopls",
-                -- gofmt = 'gofumpt',
+                max_line_len = 150, -- NOTE: should be in sync with null_ls golines
+                gofmt = "golines",
                 lsp_gofumpt = true,
                 lsp_document_formatting = true,
                 tag_options = "",
@@ -30,21 +30,11 @@ return {
                 lsp_cfg = {
                     capabilities = capabilities,
                     on_attach = shared.on_attach,
-                    --                     settings = {
-                    --                         gopls = {
-                    --                             hints = vim.json.decode([[
-                    --     {
-                    --       "assignVariableTypes": true,
-                    --       "compositeLiteralFields": true,
-                    --       "compositeLiteralTypes": true,
-                    --       "constantValues": true,
-                    --       "functionTypeParameters": true,
-                    --       "parameterNames": true,
-                    --       "rangeVariableTypes": true
-                    --     }
-                    -- ]]),
-                    --                         },
-                    -- },
+                    settings = {
+                        gopls = {
+                            symbolScope = "workspace",
+                        },
+                    },
                 },
                 diagnostic = { -- set diagnostic to false to disable vim.diagnostic setup
                     hdlr = false, -- hook lsp diag handler and send diag to quickfix
@@ -54,9 +44,6 @@ return {
                     signs = false,
                     update_in_insert = false,
                 },
-                -- TODO: enable with nvim 0.10.x
-                -- rn with nightly they disappear after save, see
-                -- https://github.com/ray-x/go.nvim/issues/416
                 lsp_inlay_hints = {
                     enable = false,
                     --     style = "inlay",

@@ -32,33 +32,15 @@ return {
                         HlSearchNear = { bg = "#2D4F67" },
                         HlSearchLens = { bg = "#2D4F67" },
                         HlSearchLensNear = { bg = "#2D4F67" },
-                        ScrollView = {bg = "#54546D"},
-                        Headline = {bg = "#333543"},
+                        ScrollView = { bg = "#54546D" },
+                        Headline = { bg = "#333543" },
                         -- TODO: more subtle highlight bg color
-                        IlluminatedWordText = {bg = "#333543"},
-                        IlluminatedWordRead = {bg = "#333543"},
-                        IlluminatedWordWrite = {bg = "#333543"},
+                        IlluminatedWordText = { bg = "#333543" },
+                        IlluminatedWordRead = { bg = "#333543" },
+                        IlluminatedWordWrite = { bg = "#333543" },
                     }
                 end,
             })
-        end,
-    },
-    {
-        "mcchrish/zenbones.nvim",
-        enabled = true,
-        lazy = false,
-        priority = 1000,
-        cond = NotVSCode,
-        dependencies = {
-            "rktjmp/lush.nvim",
-        },
-        config = function()
-            vim.g.zenwritten_lightness = "bright"
-            vim.g.zenwritten_darkness = "stark"
-            vim.g.vimbones_darkness = "stark"
-            vim.g.zenwritten_lighten_comments = 50
-            vim.g.zenwritten_darken_comments = 50
-            vim.g.vimbones_darken_comments = 50
         end,
     },
     {
@@ -79,10 +61,33 @@ return {
                         fg = "#FFB6C1",
                     }
                     -- NOTE: this is used for terminal
-                    hl.Normal = { bg = "none"}
-                    hl.NormalNC = { bg = "none"}
-                    hl.SignColumn = { bg = "none"}
+                    -- hl.Normal = { bg = "none"}
+                    -- hl.NormalNC = { bg = "none"}
+                    -- hl.SignColumn = { bg = "none"}
                 end,
+            })
+        end,
+    },
+    {
+        "rose-pine/neovim",
+        enabled = true,
+        lazy = false,
+        priority = 1000,
+        cond = NotVSCode,
+        name = "rose-pine",
+        config = function()
+            require("rose-pine").setup({
+                variant = "dawn", -- auto, main, moon, or dawn
+                extend_background_behind_borders = true,
+                styles = {
+                    bold = true,
+                    italic = false,
+                    transparency = false,
+                },
+                highlight_groups = {
+                    Comment = { fg = "love" },
+                    TSComment = { fg = "love" },
+                },
             })
         end,
     },

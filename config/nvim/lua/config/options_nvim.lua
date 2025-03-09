@@ -24,16 +24,16 @@ vim.opt.scroll = 15
 vim.opt.mousescroll = "ver:5"
 vim.opt.grepprg = "rg --vimgrep --smart-case"
 
-vim.opt.spell = false
+vim.opt.spell = true
 vim.opt.cursorline = true
-vim.opt.spelllang = "en_us"
+vim.opt.spelllang = "en_us,ru"
 
 -- vim.opt.textwidth = 120 -- live the dream
 
 vim.opt.undofile = true
 
 -- interval for writing swap file to disk, also used by gitsigns
-vim.opt.updatetime = 1500
+vim.opt.updatetime = 500
 
 vim.opt.laststatus = 0
 
@@ -53,23 +53,6 @@ vim.diagnostic.config({
 -- Don't display `~` at the end of buffer.
 vim.opt.fillchars = { eob = " " }
 
-VimBonesPatch = function()
-    local lush = require("lush")
-    local specs = lush.parse(function()
-        return {
-            Comment({ fg = "#79445b", gui = "italic" }),
-            Constant({ fg = "#2A6535", gui = "normal" }),
-            Delimiter({ fg = "#353535", gui = "normal" }),
-            Conceal({ fg = "#353535", gui = "normal" }),
-            Identifier({ fg = "#353535", gui = "normal" }),
-            Type({ fg = "#353535", gui = "normal" }),
-            Special({ fg = "#424242", gui = "bold" }),
-            TreesitterContext({ bg = "#eaeab6" }),
-        }
-    end)
-    lush.apply(lush.compile(specs))
-end
-
 if IsCMDLineEditor() == true or IsScrollbackPager() == true then
     vim.cmd([[
         set background=dark
@@ -79,17 +62,18 @@ else
     vim.cmd([[
     if strftime("%H") >= 6 && strftime("%H") < 18
         " set background=light
-        " colorscheme vimbones
-        " colorscheme zenwritten
-        " lua VimBonesPatch()
         set background=dark
-        colorscheme kanagawa
+
+        " colorscheme rose-pine
+        colorscheme tokyonight-moon
+        " colorscheme wildcharm
+        " colorscheme kanagawa
     else
         " set background=light
-        " colorscheme zenwritten
         set background=dark
-        colorscheme kanagawa
-        " colorscheme tokyonight-night
+
+        " colorscheme kanagawa
+        colorscheme tokyonight-moon
     endif
     ]])
 end
@@ -113,3 +97,25 @@ vim.cmd([[
 " background color.
 let &t_ut=''
 ]])
+
+---------------------
+--- RU layout support (used by plugin in rus.lua)
+---------------------
+
+local function escape(str)
+  -- You need to escape these characters to work correctly
+  local escape_chars = [[;,."|\]]
+  return vim.fn.escape(str, escape_chars)
+end
+
+-- Recommended to use lua template string
+local en = [[`qwertyuiop[]asdfghjkl;'zxcvbnm]]
+local ru = [[ёйцукенгшщзхъфывапролджэячсмить]]
+local en_shift = [[~QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>]]
+local ru_shift = [[ËЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ]]
+
+vim.opt.langmap = vim.fn.join({
+    -- | `to` should be first     | `from` should be second
+    escape(ru_shift) .. ';' .. escape(en_shift),
+    escape(ru) .. ';' .. escape(en),
+}, ',')

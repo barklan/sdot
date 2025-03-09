@@ -4,13 +4,14 @@ return {
         opts = {
             trim_on_write = true,
             trim_trailing = false, -- Handled by editorconfig
-            trim_last_line = true,
+            trim_last_line = false,
             trim_first_line = false,
             highlight = false,
             highlight_bg = "red",
         },
     },
     {
+        -- Sources here: https://github.com/nvimtools/none-ls.nvim/blob/main/doc/BUILTINS.md
         "nvimtools/none-ls.nvim",
         name = "null_ls",
         cond = NotVSCode,
@@ -24,13 +25,15 @@ return {
             local sources = {
                 -- null_ls.builtins.diagnostics.ansiblelint,
                 null_ls.builtins.diagnostics.hadolint,
-                null_ls.builtins.diagnostics.sqlfluff.with({
-                    args = { "lint", "-f", "github-annotation", "-n", "--disable-progress-bar", "$FILENAME" },
-                    extra_args = {
-                        "--config",
-                        os.getenv("HOME") .. "/dev/dotfiles/sqlfluff.toml",
-                    },
-                }),
+
+                -- null_ls.builtins.diagnostics.sqlfluff.with({
+                --     args = { "lint", "-f", "github-annotation", "-n", "--disable-progress-bar", "$FILENAME" },
+                --     extra_args = {
+                --         "--config",
+                --         os.getenv("HOME") .. "/dev/dotfiles/sqlfluff.toml",
+                --     },
+                -- }),
+                null_ls.builtins.diagnostics.sqruff, -- replaces sqlfluff
 
                 null_ls.builtins.diagnostics.dotenv_linter,
                 null_ls.builtins.diagnostics.fish,
@@ -65,11 +68,6 @@ return {
                     },
                 }),
 
-                -- NOTE: run "vale sync"
-                -- null_ls.builtins.diagnostics.vale.with({
-                --     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-                -- }),
-
                 -- NOTE: This is totally heavy.
                 null_ls.builtins.diagnostics.golangci_lint.with({
                     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
@@ -82,16 +80,16 @@ return {
                         "--fast",
                         -- "--enable=errcheck",
                     },
-                    timeout = 2000,
+                    timeout = 4000,
                 }),
 
-                -- NOTE: Messes with existings projects
                 null_ls.builtins.formatting.golines.with({
                     extra_args = {
-                        "--max-len=120",
+                        "--max-len=150",
                         "--base-formatter=gofumpt",
                     },
                 }),
+
                 null_ls.builtins.diagnostics.buf.with({
                     args = {
                         "lint",
@@ -101,19 +99,22 @@ return {
                         --     "--ignore=FIELD_NAMES_SNAKE_CASE",
                     },
                 }),
+
                 null_ls.builtins.diagnostics.codespell.with({
                     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
                 }),
 
                 -- Formatting section
-                null_ls.builtins.formatting.sqlfluff.with({
-                    args = { "fix", "--disable-progress-bar", "-f", "-n", "-" },
-                    extra_args = {
-                        "--FIX-EVEN-UNPARSABLE",
-                        "--config",
-                        os.getenv("HOME") .. "/dev/dotfiles/sqlfluff_fix.toml",
-                    },
-                }),
+                -- null_ls.builtins.formatting.sqlfluff.with({
+                --     args = { "fix", "--disable-progress-bar", "-f", "-n", "-" },
+                --     extra_args = {
+                --         "--FIX-EVEN-UNPARSABLE",
+                --         "--config",
+                --         os.getenv("HOME") .. "/dev/dotfiles/sqlfluff_fix.toml",
+                --     },
+                -- }),
+                null_ls.builtins.formatting.sqruff, -- replaces sqlfluff
+
                 null_ls.builtins.formatting.shfmt,
                 null_ls.builtins.formatting.just,
 

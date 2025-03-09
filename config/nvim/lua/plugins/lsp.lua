@@ -12,9 +12,9 @@ return {
         },
     },
     {
-        "folke/neodev.nvim",
-        cond = NotVSCode,
-        lazy = true,
+        "folke/lazydev.nvim",
+        ft = "lua",
+        contig = true,
     },
     {
         "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
@@ -38,7 +38,6 @@ return {
             "onsails/lspkind.nvim",
             "ray-x/lsp_signature.nvim",
             "hrsh7th/cmp-nvim-lsp",
-            "folke/neodev.nvim",
         },
         config = function()
             local shared = require("config.lsp_shim")
@@ -53,8 +52,6 @@ return {
                 "yamlls",
                 "bashls",
             }
-
-            require("neodev").setup({})
 
             local nvim_lsp = require("lspconfig")
 

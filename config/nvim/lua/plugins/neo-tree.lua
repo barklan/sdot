@@ -29,7 +29,7 @@ return {
         cond = NotVSCode,
         dependencies = {
             "nvim-lua/plenary.nvim",
-            "nvim-tree/nvim-web-devicons",
+            -- "nvim-tree/nvim-web-devicons",
             "MunifTanjim/nui.nvim",
             -- "s1n7ax/nvim-window-picker",
             -- "mrbjarksen/neo-tree-diagnostics.nvim",
@@ -143,7 +143,7 @@ return {
                                 -- if require("neo-tree.utils").is_expandable(node) == false then
                                 -- vim.notify(path)
                                 -- end
-                                vim.fn.system({ "trash", vim.fn.fnameescape(path) })
+                                vim.fn.system({ "gtrash", "put", vim.fn.fnameescape(path) })
 
                                 require("neo-tree.sources.manager").refresh(state.name)
 
@@ -163,7 +163,7 @@ return {
                                     return
                                 end
                                 for _, node in ipairs(selected_nodes) do
-                                    vim.fn.system({ "trash", vim.fn.fnameescape(node.path) })
+                                    vim.fn.system({ "gtrash", "put", vim.fn.fnameescape(node.path) })
                                 end
 
                                 require("neo-tree.sources.manager").refresh(state.name)

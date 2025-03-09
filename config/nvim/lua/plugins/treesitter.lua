@@ -1,5 +1,4 @@
 return {
-    -- {"lewis6991/spellsitter.nvim"},
     {
         "nvim-treesitter/nvim-treesitter",
         lazy = true,
@@ -18,7 +17,7 @@ return {
 
             treesitter.setup({
                 ensure_installed = "all",
-                ignore_install = { "hoon" },
+                ignore_install = { "hoon", "ocaml", "org", "ocaml_interface" },
                 incremental_selection = {
                     enable = true,
                     keymaps = {

@@ -22,7 +22,7 @@ return {
         cond = NotVSCode,
         opts = {
             current_line_blame_opts = {
-                delay = 200,
+                delay = 100,
             },
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns

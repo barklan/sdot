@@ -49,6 +49,7 @@ vim.keymap.set("n", "<M-CR>", "<Nop>")
 ---------------
 -- Commands
 ---------------
+-- TODO: need to make system-independant
 
 -- [[:silent !konsole --separate --workdir $PWD -e fish -ic "run %; echo ''; read -P 'press any key to continue ...' -n1" &<cr>]]
 vim.keymap.set("n", "<leader>e", function()
