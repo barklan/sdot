@@ -22,16 +22,13 @@ return {
         cond = NotVSCode,
         config = function()
             require("lsp_lines").setup()
-            local lines_shown = require("lsp_lines").toggle()
-            vim.diagnostic.config({
-                virtual_text = not lines_shown,
-            })
         end,
     },
     {
         "neovim/nvim-lspconfig",
         cond = NotVSCode,
-        -- NOTE: do not lazy load this.
+        -- NOTE: do not lazy load this. I don't know why...
+        lazy = false,
         -- event = "VeryLazy",
         dependencies = {
             "b0o/schemastore.nvim",
@@ -52,6 +49,11 @@ return {
                 "yamlls",
                 "bashls",
             }
+
+            local user = os.getenv("USER")
+            if user ~= "barklan" then
+                servers = {}
+            end
 
             local nvim_lsp = require("lspconfig")
 

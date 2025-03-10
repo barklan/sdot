@@ -51,7 +51,6 @@ vim.keymap.set("n", "<M-CR>", "<Nop>")
 ---------------
 -- TODO: need to make system-independant
 
--- [[:silent !konsole --separate --workdir $PWD -e fish -ic "run %; echo ''; read -P 'press any key to continue ...' -n1" &<cr>]]
 vim.keymap.set("n", "<leader>e", function()
     local file = vim.api.nvim_buf_get_name(0)
     local workdir = vim.fn.getcwd()
@@ -62,26 +61,12 @@ vim.keymap.set("n", "<leader>e", function()
             .. file
             .. [[; sleep inf"' &]]
     )
-    -- vim.cmd(
-    --     [[silent !systemd-run --slice=safe.slice --same-dir --collect --user fish -ic 'alacritty --working-directory ]]
-    --         .. workdir
-    --         .. [[ -e fish -ic "run ]]
-    --         .. file
-    --         .. [[; sleep inf"' &]]
-    -- )
 end, { silent = true, desc = "Execute file" })
-
--- vim.keymap.set("n", "<leader>e", function()
---     local file = vim.api.nvim_buf_get_name(0)
---     local workdir = vim.fn.getcwd()
---     vim.cmd([[!kitten @ launch --color background=black --copy-env --hold --cwd current fish -ic "run ]] .. file .. [["]])
--- end, { silent = true, desc = "Execute file" })
 
 vim.keymap.set("n", "<leader>j", function()
     local workdir = vim.fn.getcwd()
 
     vim.cmd(
-        -- [[silent !konsole --separate --workdir ]]
         [[silent !systemd-run --same-dir --collect --user fish -ic 'alacritty --working-directory ]]
             .. workdir
             .. [[ -e fish -ic "just; read -P continuek -n1"' &]]

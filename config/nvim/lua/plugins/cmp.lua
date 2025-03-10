@@ -7,8 +7,13 @@ return {
             local luasnip = require("luasnip")
             luasnip.config.set_config({})
 
-            require("luasnip.loaders.from_vscode").load({ paths = { "~/.config/Code/User" }, default_priority = 10000 })
             require("luasnip.loaders.from_vscode").lazy_load()
+            require("luasnip.loaders.from_vscode").lazy_load({
+                paths = { "~/.config/Code/User" },
+                default_priority = 10000,
+                -- override_priority = 10000,
+            })
+
             vim.keymap.set({ "i", "s" }, "<M-n>", "<Plug>luasnip-next-choice")
             vim.keymap.set({ "i", "s" }, "<C-h>", "<cmd>lua require'luasnip'.jump(-1)<cr>")
         end,
@@ -25,7 +30,6 @@ return {
             "L3MON4D3/LuaSnip",
             "saadparwaiz1/cmp_luasnip",
             "windwp/nvim-autopairs",
-            "lukas-reineke/cmp-under-comparator",
             "hrsh7th/cmp-buffer",
             -- "hrsh7th/cmp-path",
             "https://codeberg.org/FelipeLema/cmp-async-path",
@@ -70,8 +74,8 @@ return {
             }
 
             local shared_formatting = {
-                -- fields = { "kind", "abbr", "menu" },
-                fields = { "kind", "abbr" },
+                fields = { "kind", "abbr", "menu" },
+                -- fields = { "kind", "abbr" },
                 format = function(entry, vim_item)
                     vim_item.menu = ({
                         luasnip = "snip",
@@ -85,7 +89,6 @@ return {
                         treesitter = "TS",
                         cmdline = "cmd",
                         cmdline_history = "hist",
-                        fuzzy_buffer = "fbuf",
                         spell = "spell",
                         dictionary = "dict",
                         crates = "crates",
@@ -100,6 +103,17 @@ return {
                     return vim_item
                 end,
             }
+
+            local types = require("cmp.types")
+            local modified_priority = {
+                [types.lsp.CompletionItemKind.Variable] = types.lsp.CompletionItemKind.Method,
+                [types.lsp.CompletionItemKind.Snippet] = 0, -- top
+                [types.lsp.CompletionItemKind.Keyword] = 0, -- top
+                [types.lsp.CompletionItemKind.Text] = 100, -- bottom
+            }
+            local function modified_kind(kind)
+                return modified_priority[kind] or kind
+            end
 
             local cmp_buffer = require("cmp_buffer")
             cmp.setup({
@@ -122,17 +136,24 @@ return {
                     end,
                 },
                 sorting = {
+                    priority_weight = 2,
                     comparators = {
-                        require("cmp-under-comparator").under,
+                        cmp.config.compare.offset,
                         cmp.config.compare.exact,
-                        cmp.config.compare.score,
-                        -- cmp.config.compare.order,
                         function(...)
                             return cmp_buffer:compare_locality(...)
                         end,
                         cmp.config.compare.recently_used,
-                        cmp.config.compare.offset,
+                        function(entry1, entry2) -- sort by compare kind (Variable, Function etc)
+                            local kind1 = modified_kind(entry1:get_kind())
+                            local kind2 = modified_kind(entry2:get_kind())
+                            if kind1 ~= kind2 then
+                                return kind1 - kind2 < 0
+                            end
+                        end,
                         cmp.config.compare.kind,
+                        cmp.config.compare.score,
+                        cmp.config.compare.order,
                         -- cmp.config.compare.sort_text,
                         -- cmp.config.compare.length,
                     },
@@ -156,7 +177,14 @@ return {
                             cmp.complete()
                         end
                     end, { "i", "s" }),
-                    ["<C-Space>"] = cmp.mapping(function(fallback)
+                    ["<C-M-e>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        else
+                            cmp.complete()
+                        end
+                    end, { "i", "s" }),
+                    ["<M-e>"] = cmp.mapping(function(fallback)
                         if luasnip.expand_or_locally_jumpable() then
                             luasnip.expand_or_jump()
                         end
@@ -164,10 +192,10 @@ return {
                 }),
                 formatting = shared_formatting,
                 performance = {
-                    max_view_entries = 10,
+                    max_view_entries = 12,
                     throttle = 0,
                     debounce = 0,
-                    fetching_timeout = 70,
+                    fetching_timeout = 150,
                 },
                 sources = {
                     { name = "luasnip", priority = 11 },
@@ -177,7 +205,7 @@ return {
                     -- { name = "path" },
                     { name = "async_path" },
                     -- { name = "crates" },
-                    { name = 'fish' },
+                    { name = "fish" },
 
                     { name = "git" },
 
@@ -186,7 +214,7 @@ return {
 
                     {
                         name = "rg",
-                        keyword_length = 2,
+                        keyword_length = 3,
                         debounce = 200,
                         option = {
                             additional_arguments = "--max-depth 5 -i --one-file-system --threads 6 -g '!.git/**'",
@@ -210,7 +238,6 @@ return {
                     { name = "async_path" },
                     { name = "nvim_lsp_document_symbol", max_item_count = 3 },
                     { name = "buffer", max_item_count = 3 },
-                    { name = "fuzzy_buffer", max_item_count = 3 },
                 },
             })
 
@@ -225,7 +252,6 @@ return {
                 sources = {
                     { name = "nvim_lsp_document_symbol", max_item_count = 3 },
                     { name = "buffer", max_item_count = 3 },
-                    { name = "fuzzy_buffer", max_item_count = 3 },
                     { name = "treesitter", max_item_count = 3 },
                 },
             })
@@ -286,22 +312,6 @@ return {
         cond = CMPEnable,
         dependencies = {
             "hrsh7th/nvim-cmp",
-        },
-    },
-    {
-        "tzachar/fuzzy.nvim",
-        lazy = true,
-        dependencies = {
-            "nvim-telescope/telescope-fzf-native.nvim",
-        },
-    },
-    {
-        "tzachar/cmp-fuzzy-buffer",
-        event = { "InsertEnter", "CmdlineEnter" },
-        cond = CMPEnable,
-        dependencies = {
-            "hrsh7th/nvim-cmp",
-            "tzachar/fuzzy.nvim",
         },
     },
 }

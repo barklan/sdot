@@ -116,7 +116,9 @@ end, { silent = true, desc = "Format document" })
 -- vim.keymap.set("n", "<C-t>", ":Telescope lsp_dynamic_workspace_symbols<cr>", { desc = "Find workspace symbols" })
 vim.keymap.set("n", "<C-t>", ":FzfLua lsp_live_workspace_symbols<cr>", { desc = "Find workspace symbols" })
 
+-- This or defined in lsp
 vim.keymap.set("n", "gd", ":Telescope lsp_definitions<cr>", { silent = true, desc = "Find  LSP definitions" })
+
 vim.keymap.set("n", "gj", ":Telescope lsp_references<cr>", { silent = true, desc = "Find LSP references" })
 vim.keymap.set("n", "gi", ":Telescope lsp_implementations<cr>", { silent = true, desc = "Find LSP implementations" })
 vim.keymap.set("n", "<C-k>", function()

@@ -1,18 +1,16 @@
 vim.api.nvim_create_augroup("mynvim", {})
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
-    group = "main",
-    pattern = { "gitcommit", "markdown", "text" },
-    callback = function()
-        vim.opt_local.spell = false
-        -- vim.cmd(":TSContextDisable")
-    end,
-})
+-- vim.api.nvim_create_autocmd({ "FileType" }, {
+--     group = "main",
+--     pattern = { "gitcommit", "markdown", "text" },
+--     callback = function()
+--         vim.opt_local.spell = false
+--     end,
+-- })
 
 vim.api.nvim_create_autocmd({ "ModeChanged" }, {
     group = "main",
     pattern = { "*:no*" },
-    -- command = "set relativenumber",
     callback = function()
         vim.opt.relativenumber = true
     end,
@@ -142,20 +140,3 @@ timer:start(
         refresh_neotree_git_status()
     end)
 )
-
--- local refresh_neotree_aug = vim.api.nvim_create_augroup("RefreshNeoTree", { clear = true })
--- vim.api.nvim_create_autocmd("BufWinEnter", {
---     group = refresh_neotree_aug,
---     pattern = "*",
---     callback = function()
---         vim.defer_fn(function()
---             refresh_neotree_git_status()
---         end, 1000)
---     end,
--- })
-
-vim.api.nvim_create_autocmd("FocusGained", {
-    group = refresh_neotree_aug,
-    pattern = "*",
-    callback = refresh_neotree_git_status,
-})

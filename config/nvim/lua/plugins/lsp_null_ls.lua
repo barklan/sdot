@@ -22,19 +22,10 @@ return {
         config = function()
             local shared = require("config.lsp_shim")
             local null_ls = require("null-ls")
-            local sources = {
-                -- null_ls.builtins.diagnostics.ansiblelint,
+
+            local sources_personal = {
                 null_ls.builtins.diagnostics.hadolint,
-
-                -- null_ls.builtins.diagnostics.sqlfluff.with({
-                --     args = { "lint", "-f", "github-annotation", "-n", "--disable-progress-bar", "$FILENAME" },
-                --     extra_args = {
-                --         "--config",
-                --         os.getenv("HOME") .. "/dev/dotfiles/sqlfluff.toml",
-                --     },
-                -- }),
-                null_ls.builtins.diagnostics.sqruff, -- replaces sqlfluff
-
+                null_ls.builtins.diagnostics.sqruff,
                 null_ls.builtins.diagnostics.dotenv_linter,
                 null_ls.builtins.diagnostics.fish,
                 null_ls.builtins.diagnostics.gitlint.with({
@@ -67,7 +58,6 @@ return {
                         "--disable=MD034",
                     },
                 }),
-
                 -- NOTE: This is totally heavy.
                 null_ls.builtins.diagnostics.golangci_lint.with({
                     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
@@ -82,14 +72,12 @@ return {
                     },
                     timeout = 4000,
                 }),
-
                 null_ls.builtins.formatting.golines.with({
                     extra_args = {
                         "--max-len=150",
                         "--base-formatter=gofumpt",
                     },
                 }),
-
                 null_ls.builtins.diagnostics.buf.with({
                     args = {
                         "lint",
@@ -99,28 +87,14 @@ return {
                         --     "--ignore=FIELD_NAMES_SNAKE_CASE",
                     },
                 }),
-
                 null_ls.builtins.diagnostics.codespell.with({
                     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
                 }),
-
-                -- Formatting section
-                -- null_ls.builtins.formatting.sqlfluff.with({
-                --     args = { "fix", "--disable-progress-bar", "-f", "-n", "-" },
-                --     extra_args = {
-                --         "--FIX-EVEN-UNPARSABLE",
-                --         "--config",
-                --         os.getenv("HOME") .. "/dev/dotfiles/sqlfluff_fix.toml",
-                --     },
-                -- }),
-                null_ls.builtins.formatting.sqruff, -- replaces sqlfluff
-
+                null_ls.builtins.formatting.sqruff,
                 null_ls.builtins.formatting.shfmt,
                 null_ls.builtins.formatting.just,
-
                 -- NOTE: This fucks up some variables where you actually what them unquoted.
                 -- null_ls.builtins.formatting.shellharden,
-
                 null_ls.builtins.formatting.black,
                 null_ls.builtins.formatting.isort.with({
                     extra_args = {
@@ -137,15 +111,58 @@ return {
                     disabled_filetypes = { "json" },
                 }),
                 null_ls.builtins.formatting.fish_indent,
-
                 null_ls.builtins.formatting.buf,
                 null_ls.builtins.formatting.stylua,
             }
 
-            null_ls.setup({
-                sources = sources,
-                on_attach = shared.on_attach,
-            })
+            local sources_work = {
+                null_ls.builtins.diagnostics.sqruff,
+                null_ls.builtins.diagnostics.fish,
+                -- NOTE: This is totally heavy.
+                null_ls.builtins.diagnostics.golangci_lint.with({
+                    method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+                    -- NOTE staticcheck is provided by gopls
+                    extra_args = {
+                        "--no-config",
+                        "--concurrency=4",
+                        -- "--disable-all",
+                        "--max-same-issues=0",
+                        "--fast",
+                        -- "--enable=errcheck",
+                    },
+                    timeout = 4000,
+                }),
+                null_ls.builtins.formatting.golines.with({
+                    extra_args = {
+                        "--max-len=150",
+                        "--base-formatter=gofumpt",
+                    },
+                }),
+                null_ls.builtins.diagnostics.codespell.with({
+                    method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+                }),
+                null_ls.builtins.formatting.sqruff,
+                null_ls.builtins.formatting.black,
+                null_ls.builtins.formatting.isort.with({
+                    extra_args = {
+                        "--profile=black",
+                    },
+                }),
+                null_ls.builtins.formatting.fish_indent,
+            }
+
+            local user = os.getenv("USER")
+            if user == "barklan" then
+                null_ls.setup({
+                    sources = sources_personal,
+                    on_attach = shared.on_attach,
+                })
+            else
+                null_ls.setup({
+                    sources = sources_work,
+                    on_attach = shared.on_attach,
+                })
+            end
         end,
     },
 }

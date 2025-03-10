@@ -19,6 +19,8 @@ vim.opt.signcolumn = "yes"
 vim.o.numberwidth = 1
 vim.o.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
 
+vim.opt.jumpoptions = "stack" -- go back with <C-o> even if buffer has been closed
+
 vim.opt.cmdheight = 1
 vim.opt.scroll = 15
 vim.opt.mousescroll = "ver:5"
@@ -103,9 +105,9 @@ let &t_ut=''
 ---------------------
 
 local function escape(str)
-  -- You need to escape these characters to work correctly
-  local escape_chars = [[;,."|\]]
-  return vim.fn.escape(str, escape_chars)
+    -- You need to escape these characters to work correctly
+    local escape_chars = [[;,."|\]]
+    return vim.fn.escape(str, escape_chars)
 end
 
 -- Recommended to use lua template string
@@ -116,6 +118,8 @@ local ru_shift = [[ËЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТ�
 
 vim.opt.langmap = vim.fn.join({
     -- | `to` should be first     | `from` should be second
-    escape(ru_shift) .. ';' .. escape(en_shift),
-    escape(ru) .. ';' .. escape(en),
-}, ',')
+    escape(ru_shift)
+        .. ";"
+        .. escape(en_shift),
+    escape(ru) .. ";" .. escape(en),
+}, ",")

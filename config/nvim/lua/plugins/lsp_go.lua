@@ -16,8 +16,8 @@ return {
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
             require("go").setup({
-                -- gopls_cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=20m" },
-                gopls_cmd = { "gopls" },
+                gopls_cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=20m" },
+                -- gopls_cmd = { "gopls" },
                 goimports = "gopls",
                 max_line_len = 150, -- NOTE: should be in sync with null_ls golines
                 gofmt = "golines",

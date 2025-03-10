@@ -46,6 +46,7 @@ return {
         config = function()
             require("treesj").setup({
                 use_default_keymaps = true,
+                max_join_length = 160,
             })
             vim.keymap.set("n", "<leader>m", require("treesj").toggle, { desc = "treesj toggle" })
         end,
@@ -95,12 +96,11 @@ return {
         version = "*",
         lazy = true,
         keys = {
-            { "<leader><tab>", "<cmd> lua require'hop'.hint_words()<cr>", mode = { "n", "v" } },
+            { "<leader><tab>", ":HopLineStart<cr>", mode = { "n" } },
         },
         opts = {
             quit_key = "<Space>",
-            uppercase_labels = true,
-            keys = 'jfkdls;a',
+            -- keys = 'jfkdls;a',
         },
     },
     {
@@ -187,19 +187,5 @@ return {
             { "<C-g>c", "<Plug>CapsLockToggle", mode = { "n" } },
         },
         opts = {},
-    },
-    {
-        "saifulapm/chartoggle.nvim",
-        lazy = true,
-        keys = {
-            "<leader>,",
-            "<leader>;",
-        },
-        config = function()
-            require("chartoggle").setup({
-                leader = "<leader>",
-                keys = { ",", ";" },
-            })
-        end,
     },
 }

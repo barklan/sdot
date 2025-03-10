@@ -56,6 +56,10 @@ return {
                         ["h"] = "close_node",
                         ["t"] = "none",
                         ["Z"] = "expand_all_nodes",
+                        ["<tab>"] = function(state)
+                            state.commands["open"](state)
+                            vim.cmd("Neotree reveal")
+                        end,
                     },
                 },
                 default_component_configs = {
@@ -88,11 +92,11 @@ return {
                 filesystem = {
                     window = {
                         mappings = {
-                            ["o"] = "open_in_file_manager",
+                            ["O"] = "open_in_file_manager",
+                            -- ["O"] = "system_open",
                             ["l"] = "edit_or_open",
                             ["<CR>"] = "edit_or_open",
                             ["<2-leftmouse>"] = "edit_or_open",
-                            ["O"] = "system_open",
                             ["i"] = "run_command",
                         },
                     },
@@ -181,11 +185,11 @@ return {
                         -- NOTE: This should be synced with global gitignore
                         -- to avoid accidental commits of these files.
                         hide_by_name = {
-                            ".git",
-                            "node_modules",
-                            ".mypy_cache",
-                            "__pycache__",
-                            ".pytest_cache",
+                            -- ".git",
+                            -- "node_modules",
+                            -- ".mypy_cache",
+                            -- "__pycache__",
+                            -- ".pytest_cache",
                         },
                     },
                     follow_current_file = {
