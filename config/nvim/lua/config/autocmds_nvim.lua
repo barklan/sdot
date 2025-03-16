@@ -30,17 +30,6 @@ vim.api.nvim_create_autocmd({ "FocusGained", "WinLeave" }, {
     command = "checktime",
 })
 
--- INFO: Main enter logic
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-    group = "main",
-    pattern = "*",
-    callback = function()
-        vim.defer_fn(function()
-            GitFetchMainBranch()
-        end, 700)
-    end,
-})
-
 vim.api.nvim_create_augroup("neotree_autoopen", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", { -- Changed from BufReadPre
     desc = "Open neo-tree on enter",
@@ -65,7 +54,7 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     callback = function()
         vim.defer_fn(function()
             vim.defer_fn(GitPushAsyncNotify, 0)
-            vim.cmd(':execute "normal `A"')
+            vim.cmd("normal! `A")
             vim.cmd(":Neotree close")
             vim.cmd(":Neotree show")
         end, 200)

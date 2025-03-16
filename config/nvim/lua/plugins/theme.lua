@@ -51,19 +51,15 @@ return {
         cond = NotVSCode,
         config = function()
             require("tokyonight").setup({
-                day_brightness = 0.15,
-                -- lualine_bold = true,
+                styles = {
+                    comments = { italic = false },
+                },
+                -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
+                day_brightness = 0.1,
+                lualine_bold = true,
                 on_highlights = function(hl, _)
-                    hl.TSComment = {
-                        fg = "#FFB6C1",
-                    }
-                    hl.Comment = {
-                        fg = "#FFB6C1",
-                    }
-                    -- NOTE: this is used for terminal
-                    -- hl.Normal = { bg = "none"}
-                    -- hl.NormalNC = { bg = "none"}
-                    -- hl.SignColumn = { bg = "none"}
+                    hl.TSComment = { fg = "#FFB6C1" }
+                    hl.Comment = { fg = "#FFB6C1" }
                 end,
             })
         end,

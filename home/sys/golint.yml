@@ -9,6 +9,12 @@ linters:
     - dupword # Useless
     - exhaustruct
     - ireturn # Does not work well with generic functions
+    - err113 # Allow errors.New("...")
+    - nlreturn
+    - wsl
+    - gochecknoglobals
+    - gci # Conflict imports formatting with gofumpt
+    - mnd # Allow magic numbers
 
 linters-settings:
   # Complexity settings
@@ -66,7 +72,7 @@ linters-settings:
       - FIX
   errcheck:
     check-type-assertions: true
-    check-blank: true
+    check-blank: false
   nlreturn:
     block-size: 4
   nolintlint:
@@ -81,6 +87,8 @@ linters-settings:
     min-occurrences: 2
   govet:
     enable-all: true
+    disable:
+      - fieldalignment
 
 issues:
   max-issues-per-linter: 10

@@ -1,4 +1,7 @@
 local silent = { silent = true }
+
+vim.keymap.set("n", "q", "<Nop>")
+
 vim.keymap.set("i", "<M-d>", "<esc>", silent)
 
 vim.keymap.set("n", "/", "<cmd>call VSCodeNotify('actions.find')<cr>", silent)

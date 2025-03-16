@@ -58,20 +58,21 @@ return {
                         "--disable=MD034",
                     },
                 }),
-                -- NOTE: This is totally heavy.
-                null_ls.builtins.diagnostics.golangci_lint.with({
-                    method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-                    -- NOTE staticcheck is provided by gopls
-                    extra_args = {
-                        "--no-config",
-                        "--concurrency=4",
-                        -- "--disable-all",
-                        "--max-same-issues=0",
-                        "--fast",
-                        -- "--enable=errcheck",
-                    },
-                    timeout = 4000,
-                }),
+                -- NOTE: This is appended later
+                -- null_ls.builtins.diagnostics.golangci_lint.with({
+                --     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+                --     -- NOTE staticcheck is provided by gopls
+                --     extra_args = {
+                --         "--no-config",
+                --         "--concurrency=4",
+                --         -- "--disable-all",
+                --         "--max-same-issues=0",
+                --         "--fast",
+                --         -- "--enable=errcheck",
+                --     },
+                --     timeout = 4000,
+                -- }),
+
                 null_ls.builtins.formatting.golines.with({
                     extra_args = {
                         "--max-len=150",
@@ -115,23 +116,25 @@ return {
                 null_ls.builtins.formatting.stylua,
             }
 
+            local golangci_lint = require("go.null_ls").golangci_lint()
+            table.insert(sources_personal, golangci_lint)
+
             local sources_work = {
                 null_ls.builtins.diagnostics.sqruff,
                 null_ls.builtins.diagnostics.fish,
-                -- NOTE: This is totally heavy.
-                null_ls.builtins.diagnostics.golangci_lint.with({
-                    method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-                    -- NOTE staticcheck is provided by gopls
-                    extra_args = {
-                        "--no-config",
-                        "--concurrency=4",
-                        -- "--disable-all",
-                        "--max-same-issues=0",
-                        "--fast",
-                        -- "--enable=errcheck",
-                    },
-                    timeout = 4000,
-                }),
+
+                -- NOTE: This is appended later.
+                -- null_ls.builtins.diagnostics.golangci_lint.with({
+                --     method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+                --     -- NOTE staticcheck is provided by gopls
+                --     extra_args = {
+                --         "--no-config",
+                --         "--concurrency=4",
+                --         "--max-same-issues=0",
+                --         "--fast",
+                --     },
+                --     timeout = 4000,
+                -- }),
                 null_ls.builtins.formatting.golines.with({
                     extra_args = {
                         "--max-len=150",
@@ -151,16 +154,22 @@ return {
                 null_ls.builtins.formatting.fish_indent,
             }
 
+            table.insert(sources_work, golangci_lint)
+
             local user = os.getenv("USER")
             if user == "barklan" then
                 null_ls.setup({
                     sources = sources_personal,
                     on_attach = shared.on_attach,
+                    debounce = 1000,
+                    default_timeout = 5000,
                 })
             else
                 null_ls.setup({
                     sources = sources_work,
                     on_attach = shared.on_attach,
+                    debounce = 1000,
+                    default_timeout = 5000,
                 })
             end
         end,

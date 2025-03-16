@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+systemd-run --quiet --same-dir --collect --user fish -ic "alacritty --working-directory $PWD -e fish -ic 'lint; read -P continuek -n1'" &

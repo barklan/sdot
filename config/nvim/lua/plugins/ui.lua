@@ -4,11 +4,9 @@ return {
         priority = 1000,
         lazy = false,
         opts = {
-            -- your configuration comes here
-            -- or leave it empty to use the default settings
-            -- refer to the configuration section below
             bigfile = { enabled = true },
             scroll = { enabled = false },
+            image = { enabled = true },
         },
     },
     {
@@ -80,24 +78,6 @@ return {
             excluded_filetypes = { "neo-tree" },
             diagnostics_severities = { vim.diagnostic.severity.ERROR },
         },
-    },
-    {
-        "lukas-reineke/headlines.nvim",
-        cond = NotVSCode,
-        ft = "markdown",
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-        },
-        config = function()
-            require("headlines").setup({
-                markdown = {
-                    fat_headlines = false,
-                    codeblock_highlight = false,
-                    quote_highlight = false,
-                    bullets = {},
-                },
-            })
-        end,
     },
     {
         "RRethy/vim-illuminate",

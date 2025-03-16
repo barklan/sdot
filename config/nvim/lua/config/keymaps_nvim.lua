@@ -10,10 +10,10 @@ local close_current_buffer = function()
     elseif vim.bo.filetype == "Trouble" then
         vim.cmd(":q")
     elseif vim.bo.readonly == true then
-        require("bufdelete").bufdelete(0)
+        require("mini.bufremove").delete(0)
     else
         vim.cmd(":update")
-        require("bufdelete").bufdelete(0)
+        require("mini.bufremove").delete(0)
     end
 end
 
@@ -61,6 +61,34 @@ if IsGitEditor() == true or IsCMDLineEditor() == true then
 else
     vim.keymap.set("n", "<BS>", close_current_buffer, { silent = true, desc = "Close buffer" })
 end
+
+vim.keymap.set("n", "<M-h>", "<C-w>h", { silent = true })
+vim.keymap.set("n", "<M-l>", "<C-w>l", { silent = true })
+
+local function is_split_open()
+  local win_count = 0
+
+  for _, win_id in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win_id)
+    local buf_bt = vim.bo[buf].buftype
+    local buf_ft = vim.bo[buf].filetype
+
+    -- Count windows with regular files, ignoring 'neo-tree' and special buffers
+    if buf_bt == '' and buf_ft ~= 'neo-tree' then
+      win_count = win_count + 1
+    end
+  end
+
+  return win_count > 1
+end
+
+vim.keymap.set("n", "<C-\\>", function()
+    if is_split_open() then
+        vim.cmd("wincmd q")
+    else
+        vim.cmd("wincmd v")
+    end
+end, { silent = true })
 
 --------------
 --- Navigation
@@ -223,16 +251,37 @@ vim.keymap.set("n", "<leader>fs", ":Telescope grep_string<cr>", { silent = true,
 -- Misc
 -----------------
 
+local function toggle_quickfix()
+    for _, win in ipairs(vim.fn.getwininfo()) do
+        if win.quickfix == 1 then
+            vim.cmd("cclose")
+            return
+        end
+    end
+    vim.cmd("copen")
+end
+
+vim.keymap.set("n", "<leader>q", toggle_quickfix, { silent = true, desc = "Open quickfix" })
+
 vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>", { silent = true, desc = "Search undo history" })
 
-vim.keymap.set("n", "<M-e>", ":Neotree git_status toggle float focus reveal=true<cr>", { silent = true, desc = "git status float" })
 vim.keymap.set("n", "<C-e>", function()
     if vim.bo.filetype == "neo-tree" then
         vim.cmd("wincmd l")
     else
-        vim.cmd(":Neotree filesystem left focus reveal=true")
+        vim.cmd(":Neotree source=filesystem position=left action=focus reveal=true") -- source can be "last"
     end
 end, { silent = true, desc = "Focus explorer" })
+
+if IsCMDLineEditor() == true then
+    vim.keymap.set("n", "<M-e>", "<cmd>wqall<cr>", { silent = true, desc = "Quit Neovim" })
+else
+    vim.keymap.set("n", "<M-e>", ":Neotree git_status toggle float focus reveal=true<cr>",
+        { silent = true, desc = "git status float" })
+end
+
+vim.keymap.set("n", "<C-M-e>", ":Neotree source=diagnostics toggle float focus reveal=true<cr>",
+    { silent = true, desc = "diasgnostic float" })
 
 -- Clear stuff
 vim.keymap.set("n", "<leader>l", function()
@@ -253,6 +302,7 @@ vim.keymap.set("n", "<C-CR>", "<Plug>(JqPlaygroundRunQuery)")
 
 vim.keymap.set("n", "<C-g>o", "<cmd>silent !git-open<cr>")
 vim.keymap.set("n", "<C-;>", ":FzfLua git_status<cr>", silent)
+vim.keymap.set("n", "<C-g>s", ":FzfLua git_stash<cr>", silent)
 
 vim.keymap.set("n", "<C-g>a", "<cmd>Git add %<cr>")
 vim.keymap.set("n", "<C-g>j", function()
@@ -280,6 +330,8 @@ end, { desc = "Change base to release" })
 -----
 
 vim.keymap.set("n", "<leader>gta", ":GoAddTest<cr>", { desc = "Add test for current function" })
+vim.keymap.set("n", "<leader>gtc", ":GoCoverage -p<cr>", { desc = "Test and show coverage" })
+vim.keymap.set("n", "<leader>gl", ":GoLint<cr>", { desc = "Lint" })
 
 vim.keymap.set("n", "<leader>g<cr>", ":GoGenReturn<cr>", { silent = true })
 vim.keymap.set("n", "<leader>gr", ":LspRestart<cr>", { silent = true })

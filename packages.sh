@@ -46,7 +46,7 @@ sudo pacman -Syu --needed \
 	alacritty bubblewrap git-lfs \
 	graphviz python-pygments hugo \
 	python-pipx python-pynvim gdb zellij bpf kompare \
-    proxychains-ng osv-scanner
+    osv-scanner
 
 # Cli
 sudo pacman -Syu --needed \
@@ -104,7 +104,6 @@ pipx install --include-deps gitlint
 pipx install yamllint
 pipx install ansible-lint
 pipx install isort
-pipx install sqlfluff
 pipx install pre-commit
 pipx install basedpyright
 pipx install pdfCropMargins

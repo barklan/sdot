@@ -184,7 +184,7 @@ return {
         cond = NotVSCode,
         keys = {
             { "<C-l>", "<Plug>CapsLockToggle", mode = { "i" } },
-            { "<C-g>c", "<Plug>CapsLockToggle", mode = { "n" } },
+            -- { "<C-g>c", "<Plug>CapsLockToggle", mode = { "n" } },
         },
         opts = {},
     },

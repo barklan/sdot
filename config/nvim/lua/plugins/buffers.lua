@@ -1,22 +1,25 @@
 return {
     {
+        "echasnovski/mini.bufremove",
+        lazy = true,
+        cond = NotVSCode,
+        version = "*",
+        config = true,
+    },
+    {
         "kazhala/close-buffers.nvim",
         lazy = true,
         cond = NotVSCode,
         opts = {},
     },
     {
-        "famiu/bufdelete.nvim", -- TODO: archived on GitHub
-        lazy = true,
-        cond = NotVSCode,
-    },
-    {
         "chrisgrieser/nvim-early-retirement",
-        event = "VeryLazy",
         cond = NotVSCode,
+        event = "VeryLazy",
         opts = {
             minimumBufferNum = 5,
-            retirementAgeMins = 10,
+            retirementAgeMins = 20,
+            notificationOnAutoClose = true,
         },
     },
     {

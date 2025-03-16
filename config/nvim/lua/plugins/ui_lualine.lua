@@ -56,7 +56,7 @@ return {
                         -- { "filename" },
                         {
                             "diagnostics",
-                            symbols = { error = "Errors ", warn = "Warnings ", info = "Infos ", hint = "Hints " },
+                            symbols = { error = "E", warn = "W", info = "I", hint = "H" },
                         },
                         {
                             "diff",

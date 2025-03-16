@@ -5,8 +5,9 @@ IFS=$'\n\t'
 CURRENT_BRANCH=$(git branch --show-current)
 # DEFAULT_BRANCH=$(git default-branch-name)
 
-if [[ "$CURRENT_BRANCH" == "release" ]]; then
-	notify-send -a 'git' "can't commit to release branch"
+# NOTE: main excluded as it's mainly used for personal projects.
+if [[ "$CURRENT_BRANCH" =~ ^(release|master|develop)$ ]]; then
+	notify-send -a 'git' "can't commit to protected branch: $CURRENT_BRANCH"
 	exit 111
 fi
 

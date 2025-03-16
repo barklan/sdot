@@ -32,7 +32,7 @@ return {
             -- "nvim-tree/nvim-web-devicons",
             "MunifTanjim/nui.nvim",
             -- "s1n7ax/nvim-window-picker",
-            -- "mrbjarksen/neo-tree-diagnostics.nvim",
+            "mrbjarksen/neo-tree-diagnostics.nvim",
         },
         config = function()
             vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
@@ -43,7 +43,7 @@ return {
                     "filesystem",
                     "buffers",
                     "git_status",
-                    -- "diagnostics",
+                    "diagnostics",
                 },
                 close_if_last_window = true,
                 enable_git_status = true,
@@ -63,8 +63,11 @@ return {
                     },
                 },
                 default_component_configs = {
+                    file_size = {
+                        enabled = false,
+                    },
                     icon = {
-                        folder_empty = "🗀",
+                        folder_empty = "[]",
                         default = "-",
                         folder_closed = ">",
                         folder_open = "v",
@@ -79,7 +82,6 @@ return {
                         symbols = {
                             added = "NEW",
                             modified = "",
-                            -- unstaged = "󰄱",
                             unstaged = "",
                             deleted = "DEL",
                             renamed = "RENAME",
@@ -90,6 +92,7 @@ return {
                     },
                 },
                 filesystem = {
+                    use_libuv_file_watcher = true,
                     window = {
                         mappings = {
                             ["O"] = "open_in_file_manager",
@@ -185,7 +188,7 @@ return {
                         -- NOTE: This should be synced with global gitignore
                         -- to avoid accidental commits of these files.
                         hide_by_name = {
-                            -- ".git",
+                            ".git",
                             -- "node_modules",
                             -- ".mypy_cache",
                             -- "__pycache__",
@@ -194,8 +197,8 @@ return {
                     },
                     follow_current_file = {
                         enabled = true,
+                        leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
                     },
-                    use_libuv_file_watcher = true,
                 },
             })
         end,

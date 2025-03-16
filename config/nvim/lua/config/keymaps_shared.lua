@@ -2,6 +2,8 @@ local silent = { silent = true }
 
 -- Unmap annoying stuff.
 vim.keymap.set("n", "q", "<Nop>")
+vim.keymap.set("n", "<leader>%", ":%s/\\v")
+
 vim.keymap.set("n", "<C-]>", "<Nop>")
 vim.keymap.set({ "n", "i", "x", "v" }, "<F1>", "<Nop>")
 vim.keymap.set({ "n" }, "s", "<Nop>")

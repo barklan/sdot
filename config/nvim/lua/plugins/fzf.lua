@@ -15,14 +15,14 @@ return {
                 ["--marker"] = "+",
             },
             winopts = {
-                height = 0.60, -- window height
-                width = 0.45,
-                row = 0.20,
-                col = 0.42,
+                height = 0.9, -- window height
+                width = 0.5,
+                row = 0.40,
+                col = 0.45,
                 preview = {
-                    hidden = "hidden",
+                    -- hidden = "hidden",
                     layout = "vertical", -- horizontal|vertical|flex
-                    vertical = "down:45%", -- up|down:size
+                    vertical = "down:35%", -- up|down:size
                     winopts = { -- builtin previewer window options
                         number = false,
                         relativenumber = false,
@@ -47,6 +47,10 @@ return {
                         { nowait = true, buffer = true }
                     )
                     vim.keymap.set("t", "<C-l>", "<Esc>", { nowait = true, buffer = true })
+                    vim.keymap.set("t", "<C-t>", "<Esc>", { nowait = true, buffer = true })
+                    vim.keymap.set("t", "<C-h>", "<Esc>", { nowait = true, buffer = true })
+                    vim.keymap.set("t", "<C-;>", "<Esc>", { nowait = true, buffer = true })
+                    vim.keymap.set("t", "<C-q>", "<Nop>", { nowait = true, buffer = true })
                 end,
             },
             grep = {

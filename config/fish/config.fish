@@ -3,30 +3,31 @@ if status is-interactive
     # alias f='cd ~/dev/'
     alias reboot='reboot-safe'
 
+    bind \cc cancel-commandline # restore old ^C behavior
+
     bind \co 'xdg-open . &>/dev/null < /dev/null'
     bind \eo 'cd ~/dev; commandline -f repaint;'
     bind \ep 'cd-git-root; commandline -f repaint'
-    bind \en nvim
+    bind \en 'nvim; emit should_repaint'
     bind \ei zj
     # bind \e\cn 'code . 2>/dev/null'
     bind \er 'just --list; commandline -f repaint'
     bind \e\cr 'just --choose; commandline -f repaint'
     bind \cg 'echo; git status --show-stash && echo && gitx status; commandline -f repaint'
-    # NOTE: if you what to clear screen prepend this with clear;
-    # bind \el 'echo; eza -a --group-directories-first; commandline -f repaint'
     bind \el 'echo; eza -l -a --hyperlink --group-directories-first --git --icons --time-style=relative --git-repos; commandline -f repaint'
-    bind \ek 'set old_tty (stty -g); stty sane; lfcd; stty $old_tty; commandline -f repaint'
+
+    # bind \ek 'set old_tty (stty -g); stty sane; lfcd; stty $old_tty; commandline -f repaint'
+    bind \ek lf
 
     # bind \t accept-autosuggestion
     # bind \t forward-word
     # bind \ej edit_command_buffer
-    bind \cs complete
 
     # To delete an abbreviation use `abbr -e t`
     abbr -a g git
     abbr -a d docker
     abbr -a j just
-    abbr -a rm trash
+    abbr -a rm gtrash put
     abbr -a we watchexec -e
 
     set -gx FZF_DEFAULT_OPTS '--height 70% --layout reverse --bind tab:down,btab:up,alt-s:toggle+down,alt-e:jump-accept'
@@ -40,11 +41,7 @@ if status is-interactive
     fzf_configure_dunder_bindings
 
     # TODO: --git_log might me useful
-    fzf_configure_bindings --git_status=\e\cg --variables=\e\cv --git_log= --history=
-
-    if string match -r '\;15$' $COLORFGBG &>/dev/null
-        set -gx MCFLY_LIGHT TRUE
-    end
+    fzf_configure_bindings --git_status=\e\cg --variables=\e\cv --git_log=\e\cc --history=
 
     bind --erase \cr
     mcfly init fish | source
@@ -72,18 +69,14 @@ if status is-interactive
         set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
     end
     # set -gx SHELL (command --search fish)
+end
 
-    # export http_proxy=socks5://127.0.0.1:1080
-    # export https_proxy=socks5://127.0.0.1:1080
+function __on_should_repaint --on-event should_repaint
+    commandline -f repaint
 end
 
 function fish_title
-    if set -q argv[1]
-        echo (fish_prompt_pwd_dir_length=1 prompt_pwd)
-        # echo (fish_prompt_pwd_dir_length=1 prompt_pwd): $argv
-    else
-        echo (fish_prompt_pwd_dir_length=1 prompt_pwd)
-    end
+    echo (fish_prompt_pwd_dir_length=1 prompt_pwd)
 end
 
 function _hydro_pwd
@@ -146,16 +139,6 @@ function fish_prompt --description 'Write out the prompt'
     set -g __fish_git_prompt_showcolorhints false
     set -g __fish_git_prompt_char_stateseparator " "
 
-    # NOTE: handled by kitty
-    # if test $CMD_DURATION -gt 10000
-    #     set -l seconds (math $CMD_DURATION / 1000)
-    #     set -l rounded_seconds (math "round($seconds)")
-    #     notify-send -a fish "last command exited after $rounded_seconds seconds"
-    #
-    #     # clear so that no notifications occur on repaints
-    #     set -gx CMD_DURATION 0
-    # end
-
     set -l systemd_shell ""
     if test "$SAFE_SYSTEMD_SHELL" = yes
         set systemd_shell " SYSTEMD-SHELL"
@@ -171,19 +154,11 @@ function fish_prompt --description 'Write out the prompt'
 end
 
 # function fish_right_prompt -d "Write out the right prompt"
-#     date '+%m/%d/%y'
+#     date '+%T'
 # end
 
 # NOTE: to disable fish greeting
 set fish_greeting
-
-# function fish_greeting
-#     if test $TERM = alacritty
-#         # echo The time is (set_color yellow; date +%T; set_color normal)
-#         eza -a --group-directories-first
-#     end
-# end
-
 
 # Change working dir in fish to last dir in lf on exit (adapted from ranger).
 #
@@ -204,12 +179,47 @@ function lfcd --wraps="lf" --description="lf - Terminal file manager (changing d
     cd "$(command lf -print-last-dir $argv)"
 end
 
+function sshfs-mount
+    if test (count $argv) -ne 2
+        echo "sshfs-mount <server> <remote_user>"
+        return
+    end
+    sshfs $argv[1]:/home/$argv[2] ~/remote -o reconnect,ServerAliveInterval=15,ServerAliveCountMax=3
+end
+
+function sshfs-umount
+    fusermount -u ~/remote
+end
+
+# function ssh-forward
+#     ssh -tR 5432:localhost:5432 main
+# end
+
+function ssh-pg
+    if test (count $argv) -ne 1
+        echo "ssh-pg <host>"
+        return
+    end
+
+    ssh -NL 5432:127.0.0.1:5432 $argv[1]
+end
+
+# yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' "https://www.youtube.com/watch?v=040ejWnFkj0"
+function youtube
+    set -f format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio'
+    yt-dlp -f "$format" -S vcodec:av1 $argv[1]
+end
+
 function zj
     zellij attach
     if test $status != 0
         zellij
     end
     commandline -f repaint
+end
+
+function safe
+    systemd-run --slice=safe.slice --shell --user -E SAFE_SYSTEMD_SHELL=yes
 end
 
 function run
@@ -319,6 +329,20 @@ function yes_or_no
         return 0
     else
         return 1
+    end
+end
+
+function reboot-safe
+    if yes_or_no "Are you sure?" false
+        bash -c reboot
+    end
+end
+
+function full-system-update
+    if yes_or_no "Update system?" false
+        bash ~/sys/full_system_update.sh
+    else
+        echo aborted
     end
 end
 
@@ -458,6 +482,17 @@ function print-line
     printf '%*s\n' "$terminal_width" '' | tr " " -
 end
 
+function cloud-drive-mount
+    rclone mount --daemon --vfs-cache-mode full --vfs-cache-max-size 75Gi --vfs-cache-max-age 2h --timeout 90m yadrive:/ /home/barklan/cloud/
+    sleep 2
+    gocryptfs -passfile ~/.cloud_enc_pass.txt /home/barklan/cloud/enc /home/barklan/cloud_enc_mount
+end
+
+function cloud-drive-umount
+    fusermount -u /home/barklan/cloud_enc_mount
+    fusermount -u /home/barklan/cloud/
+end
+
 function we
     set help "we <filetype> <cmd>
 Watch files and execute <cmd> on change."
@@ -498,26 +533,51 @@ Watch files and reload <cmd> on change."
     watchexec -r --debounce 1sec -e $ft --shell='fish -i' -- "notify-send -t 1000 'Restarting: $cmd' && clear && echo '$ft --> $cmd'  && date && print-line && $cmd"
 end
 
-# function pre-commit-init
-#     if test -e ".pre-commit-config.yaml"
-#         echo 'pre-commit file already exists'
-#     else
-#         curl -L -O https://raw.githubusercontent.com/barklan/common/main/touse/.pre-commit-config.yaml
-#     end
-#     pre-commit install
-#     and pre-commit install --hook-type commit-msg
-#     and pre-commit install --hook-type post-commit
-# end
-#
-#
-# function pre-commit-rm
-#     pre-commit uninstall
-#     and pre-commit uninstall --hook-type commit-msg
-#     and pre-commit uninstall --hook-type post-commit
-# end
+function extract-audio
+    if test (count $argv) -ne 1
+        echo "extract-audio <file>"
+        return
+    end
+    ffmpeg -i $argv[1] -vn -acodec copy output-audio.aac
+end
+
+function chrome-tor
+    chromium --proxy-server="socks5://127.0.0.1:9050"
+end
+
+function convert-images-web
+    for f in *.png *.jpg
+        set -f base (string split -r -m 1 -f 1 . $f)
+        avifenc -j all --ignore-exif --ignore-xmp -- $f "$base".avif
+    end
+end
+
+# Presets: veryfast, ultrafast
+function compress-mp4-qsv
+    if test (count $argv) -ne 2
+        echo "compress-mp4-qsv <input> <output>"
+        return
+    end
+    ffmpeg -hwaccel vaapi -hwaccel_output_format vaapi -i $argv[1] -vaapi_device /dev/dri/renderD128 -vf 'hwmap=derive_device=qsv,format=qsv,scale_qsv=w=2560:h=1600' -c:v hevc_qsv -c:a copy -global_quality 25 -preset slow -loglevel warning -stats $argv[2]
+end
+
+function compress-mp4-fast
+    if test (count $argv) -ne 1
+        echo "compress-mp4-fast <input>"
+        return
+    end
+    set base (string split -r -m 1 -f 1 . $argv[1])
+    set filename (string join '' $base '_c.mkv')
+    echo $filename
+    ffmpeg -hwaccel vaapi -hwaccel_output_format vaapi -threads 16 -i $argv[1] -vaapi_device /dev/dri/renderD128 -c:v hevc_vaapi -c:a copy -vf format='nv12|vaapi,hwupload' -qp 40 -preset ultrafast -loglevel warning -stats $filename
+end
 
 function nvim-sessions-clean
     rm ~/.local/share/nvim/sessions/*
+end
+
+function pacmanls
+    pacman -Qq | fzf --multi --preview 'pacman -Qi {1}' | xargs -ro pacman -Qi
 end
 
 function dotenv

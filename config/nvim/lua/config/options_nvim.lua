@@ -58,7 +58,7 @@ vim.opt.fillchars = { eob = " " }
 if IsCMDLineEditor() == true or IsScrollbackPager() == true then
     vim.cmd([[
         set background=dark
-        colorscheme tokyonight
+        colorscheme tokyonight-night
     ]])
 else
     vim.cmd([[
@@ -75,7 +75,9 @@ else
         set background=dark
 
         " colorscheme kanagawa
+        " colorscheme tokyonight-storm
         colorscheme tokyonight-moon
+        " colorscheme tokyonight-night
     endif
     ]])
 end

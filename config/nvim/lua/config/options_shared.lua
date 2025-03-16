@@ -1,5 +1,6 @@
 vim.opt.hlsearch = true
-vim.opt.shell = "/bin/bash"
+-- vim.opt.shell = "/bin/bash"
+vim.opt.shell = "/usr/bin/fish"
 vim.opt.encoding = "utf-8"
 vim.opt.clipboard = "unnamedplus"
 vim.opt.incsearch = true

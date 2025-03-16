@@ -2,6 +2,7 @@ return {
     {
         "nvim-telescope/telescope-file-browser.nvim",
         lazy = true,
+        cond = NotVSCode,
         dependencies = {
             "nvim-lua/plenary.nvim",
         },
@@ -9,10 +10,12 @@ return {
     {
         "crispgm/telescope-heading.nvim",
         lazy = true,
+        cond = NotVSCode,
     },
     {
         "edolphin-ydf/goimpl.nvim",
         lazy = true,
+        cond = NotVSCode,
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-lua/popup.nvim",
@@ -36,18 +39,7 @@ return {
             "debugloop/telescope-undo.nvim",
         },
         config = function()
-            local previewers = require("telescope.previewers")
             local lga_actions = require("telescope-live-grep-args.actions")
-
-            local delta = previewers.new_termopen_previewer({
-                get_command = function(entry)
-                    if entry.status == "??" or "A " then
-                        return { "git", "diff", entry.value }
-                    end
-
-                    return { "git", "diff", entry.value .. "^!" }
-                end,
-            })
 
             local actions = require("telescope.actions")
             require("telescope").setup({
@@ -91,6 +83,14 @@ return {
                     lsp_document_symbols = {
                         ignore_symbols = { "field" },
                         symbol_width = 60,
+                        mappings = {
+                            i = {
+                                ["<C-k>"] = actions.close,
+                            },
+                            n = {
+                                ["<C-k>"] = actions.close,
+                            },
+                        },
                     },
                     lsp_references = {
                         show_line = false,

@@ -137,7 +137,8 @@ function DeleteBuffersWithoutFile()
     for k, v in pairs(buffers) do
         if not FileExists(v.info.name) then
             NotifySend("nvim: deleted buffer", v.info.name)
-            require("bufdelete").bufdelete(v.bufnr)
+            -- require("bufdelete").bufdelete(v.bufnr)
+            require("mini.bufremove").delete(v.bufnr)
         end
     end
 end

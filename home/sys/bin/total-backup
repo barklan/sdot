@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -x
+
+home=/home/barklan
+cd "$home"
+
+BACKUP="backup_$(date -I | tr '-' '_').tar.zst.age"
+tar -I zstd -cpf - \
+    ./.gnupg ./.ssh ./.mozilla ./sss ./dev ./Documents \
+    | age -o "${BACKUP}" -p
+
+# NOTE: old code
+# mkdir -p ~/.backup
+# sudo rsync -ac --no-links --exclude='.venv' --exclude='node_modules' --delete ./.gnupg ./.ssh ./dev ./.mozilla/firefox ./Documents ./sss ./.backup
+# BACKUP="backup_$(date -I | tr '-' '_').tar.zst.age"
+# sudo bash -c "tar cf - ./.backup | zstd --fast=4 | age -o ${BACKUP} -p"
